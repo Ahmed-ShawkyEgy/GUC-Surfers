@@ -46,6 +46,7 @@ Model_3DS model_tree;
 
 // Textures
 GLTexture tex_ground;
+GLTexture tex_wood;
 
 //=======================================================================
 // Lighting Configuration Function
@@ -167,6 +168,86 @@ void RenderGround()
 	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
 }
 
+void drawFace(Vector normal)
+{
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	glNormal3f(normal.x,normal.y,normal.z);	// Set quad normal direction.
+	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
+	glVertex3f(-1, 0, -1);
+	glTexCoord2f(5, 0);
+	glVertex3f(1, 0, -1);
+	glTexCoord2f(5, 5);
+	glVertex3f(1, 0, 1);
+	glTexCoord2f(0, 5);
+	glVertex3f(-1,0, 1);
+	glEnd();
+	glPopMatrix();
+}
+
+void RenderBox()
+{
+	glDisable(GL_LIGHTING);	// Disable lighting 
+
+	glColor3f(1,1,1);
+
+	glEnable(GL_TEXTURE_2D);	// Enable 2D texturing
+
+	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
+
+
+	// Top Face
+	glPushMatrix();
+	glTranslated(0, 1, 0);
+	drawFace(Vector(0, 1, 0));
+	glPopMatrix();
+
+	// Bottom Face
+	glPushMatrix();
+	glTranslated(0, -1, 0);
+	drawFace(Vector(0, -1, 0));
+	glPopMatrix();
+
+	// Left Face
+	glPushMatrix();
+	glRotated(90, 0, 0, 1);
+	glTranslated(0,1, 0);
+	drawFace(Vector(1,0, 0));
+	glPopMatrix();
+
+	// Right Face
+	glPushMatrix();
+	glRotated(90, 0, 0, 1);
+	glTranslated(0,-1, 0);
+	drawFace(Vector(-1, 0, 0));
+	glPopMatrix();
+
+	// Front Face
+	glPushMatrix();
+	glRotated(90, 0, 0, 1);
+	glRotated(90, 1, 0, 0);
+	glTranslated(0, 1, 0);
+	drawFace(Vector(1, 0, 0));
+	glPopMatrix();
+
+
+	// Back Face
+	glPushMatrix();
+	glRotated(90, 0, 0, 1);
+	glRotated(90, 1, 0, 0);
+	glTranslated(0, -1, 0);
+	drawFace(Vector(1, 0, 0));
+	glPopMatrix();
+
+
+
+	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
+
+	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
+}
+
+
+
 //=======================================================================
 // Display Function
 //=======================================================================
@@ -182,21 +263,24 @@ void myDisplay(void)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
 
 	// Draw Ground
-	RenderGround();
+	//RenderGround();
 
 	// Draw Tree Model
-	glPushMatrix();
+	/*glPushMatrix();
 	glTranslatef(10, 0, 0);
 	glScalef(0.7, 0.7, 0.7);
 	model_tree.Draw();
-	glPopMatrix();
+	glPopMatrix();*/
 
 	// Draw house Model
-	glPushMatrix();
+	/*glPushMatrix();
 	glRotatef(90.f, 1, 0, 0);
 	model_house.Draw();
-	glPopMatrix();
+	glPopMatrix();*/
 
+	glPushMatrix();
+	RenderBox();
+	glPopMatrix();
 
 	//sky box
 	glPushMatrix();
@@ -322,6 +406,8 @@ void LoadAssets()
 
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
+	tex_wood.Load("Textures/wood.bmp");
+
 	loadBMP(&tex, "Textures/blu-sky-3.bmp", true);
 }
 

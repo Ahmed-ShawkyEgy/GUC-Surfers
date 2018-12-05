@@ -1,24 +1,5 @@
-﻿  GLTexture.cpp
-d:\ahmed\year 4 engineer\semester 1\graphics\project\gltexture.cpp(61): warning C4996: '_strlwr': This function or variable may be unsafe. Consider using _strlwr_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(234): note: see declaration of '_strlwr'
-d:\ahmed\year 4 engineer\semester 1\graphics\project\gltexture.cpp(65): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(440): note: see declaration of 'strtok'
-d:\ahmed\year 4 engineer\semester 1\graphics\project\gltexture.cpp(77): warning C4996: '_strlwr': This function or variable may be unsafe. Consider using _strlwr_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(234): note: see declaration of '_strlwr'
-d:\ahmed\year 4 engineer\semester 1\graphics\project\gltexture.cpp(146): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-  Model_3DS.cpp
-  d:\ahmed\year 4 engineer\semester 1\graphics\project\model_3ds.cpp(78) : You need to uncomment this if you are using MFC
-  
-d:\ahmed\year 4 engineer\semester 1\graphics\project\model_3ds.cpp(182): warning C4996: 'strtok': This function or variable may be unsafe. Consider using strtok_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(440): note: see declaration of 'strtok'
-d:\ahmed\year 4 engineer\semester 1\graphics\project\model_3ds.cpp(212): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-d:\ahmed\year 4 engineer\semester 1\graphics\project\model_3ds.cpp(764): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-  OpenGLMeshLoader.cpp
+﻿  OpenGLMeshLoader.cpp
 d:\ahmed\year 4 engineer\semester 1\graphics\project\texturebuilder.h(27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 d:\ahmed\year 4 engineer\semester 1\graphics\project\texturebuilder.h(28): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-  Generating Code...
 GLTexture.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
   OpenGLMeshLoader.vcxproj -> D:\Ahmed\Year 4 Engineer\Semester 1\Graphics\Project\Debug\OpenGLMeshLoader.exe
