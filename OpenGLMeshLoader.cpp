@@ -3,6 +3,14 @@
 #include "Model_3DS.h"
 #include "GLTexture.h"
 #include <glut.h>
+#include <stdlib.h>
+#include <vector>
+
+using namespace std;
+
+struct Shape;
+const int SKYBOX_BOUNDARY = 10;	
+const float GAME_SPEED = 2.0;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -15,6 +23,18 @@ GLdouble fovy = 45.0;
 GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
+
+
+vector<Shape> obstacles;
+
+struct Shape {
+	float x;
+	int lane;
+
+	Shape(float x,int lane) {
+		this->x = x,this->lane = lane;
+	};
+};
 
 class Vector
 {
@@ -168,7 +188,8 @@ void RenderGround()
 	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
 }
 
-void drawFace(Vector normal)
+// Draws a unit quad
+void renderFace(Vector normal)
 {
 	glPushMatrix();
 	glBegin(GL_QUADS);
@@ -185,9 +206,9 @@ void drawFace(Vector normal)
 	glPopMatrix();
 }
 
-void RenderBox()
+void renderObstacle(int x,int lane)
 {
-	glDisable(GL_LIGHTING);	// Disable lighting 
+	//glDisable(GL_LIGHTING);	// Disable lighting 
 
 	glColor3f(1,1,1);
 
@@ -195,31 +216,32 @@ void RenderBox()
 
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
+	glTranslated(x, 0, lane);
 
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
-	drawFace(Vector(0, 1, 0));
+	renderFace(Vector(0, 1, 0));
 	glPopMatrix();
 
 	// Bottom Face
 	glPushMatrix();
 	glTranslated(0, -1, 0);
-	drawFace(Vector(0, -1, 0));
+	renderFace(Vector(0, -1, 0));
 	glPopMatrix();
 
 	// Left Face
 	glPushMatrix();
 	glRotated(90, 0, 0, 1);
 	glTranslated(0,1, 0);
-	drawFace(Vector(1,0, 0));
+	renderFace(Vector(1,0, 0));
 	glPopMatrix();
 
 	// Right Face
 	glPushMatrix();
 	glRotated(90, 0, 0, 1);
 	glTranslated(0,-1, 0);
-	drawFace(Vector(-1, 0, 0));
+	renderFace(Vector(-1, 0, 0));
 	glPopMatrix();
 
 	// Front Face
@@ -227,7 +249,7 @@ void RenderBox()
 	glRotated(90, 0, 0, 1);
 	glRotated(90, 1, 0, 0);
 	glTranslated(0, 1, 0);
-	drawFace(Vector(1, 0, 0));
+	renderFace(Vector(1, 0, 0));
 	glPopMatrix();
 
 
@@ -236,7 +258,7 @@ void RenderBox()
 	glRotated(90, 0, 0, 1);
 	glRotated(90, 1, 0, 0);
 	glTranslated(0, -1, 0);
-	drawFace(Vector(1, 0, 0));
+	renderFace(Vector(1, 0, 0));
 	glPopMatrix();
 
 
@@ -244,8 +266,24 @@ void RenderBox()
 	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
 
 	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
+
+	glPopMatrix();
 }
 
+// adds an obstacle behind the skybox
+void addObstacle(int lane)
+{
+	obstacles.push_back(Shape(SKYBOX_BOUNDARY,lane));
+}
+
+void destroyAtIndex(int index, vector<Shape> &shapes)
+{
+	// Swap this element with the last one to pop from the vector
+	Shape tmp = shapes[shapes.size() - 1];
+	shapes[shapes.size() - 1] = shapes[index];
+	shapes[index] = tmp;
+	shapes.pop_back();
+}
 
 
 //=======================================================================
@@ -279,8 +317,14 @@ void myDisplay(void)
 	glPopMatrix();*/
 
 	glPushMatrix();
-	RenderBox();
+	renderObstacle(0,3);
+	renderObstacle(0,-3);
 	glPopMatrix();
+
+	for (unsigned i = 0; i < obstacles.size();i++)
+	{
+		//renderObstacle(obstacles[i].x, obstacles[i].lane);
+	}
 
 	//sky box
 	glPushMatrix();
@@ -412,10 +456,26 @@ void LoadAssets()
 }
 
 //=======================================================================
+// Animation Function
+//=======================================================================
+void anime()
+{
+	for (int i = 0; i < obstacles.size();i++)
+	{
+	//	obstacles[i].x-=GAME_SPEED;
+	}
+
+	for (int i = 0; i < 1e7; i++);
+	glutPostRedisplay();
+}
+
+//=======================================================================
 // Main Function
 //=======================================================================
 void main(int argc, char** argv)
 {
+	addObstacle(0);
+
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -428,13 +488,15 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(myDisplay);
 
+	//glutIdleFunc(anime);
+
 	glutKeyboardFunc(myKeyboard);
 
-	glutMotionFunc(myMotion);
+	//glutMotionFunc(myMotion);
 
-	glutMouseFunc(myMouse);
+	//glutMouseFunc(myMouse);
 
-	glutReshapeFunc(myReshape);
+	//glutReshapeFunc(myReshape);
 
 	myInit();
 
@@ -449,3 +511,4 @@ void main(int argc, char** argv)
 
 	glutMainLoop();
 }
+

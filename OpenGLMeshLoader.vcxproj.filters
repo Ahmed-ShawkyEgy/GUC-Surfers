@@ -24,6 +24,12 @@
     <ClCompile Include="OpenGLMeshLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Vector3f.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLTexture.h">
@@ -35,5 +41,7 @@
     <ClInclude Include="D:\4th semester 2nd year teaching\Graphics\Labs\new implementation\OpenGLMeshLoader\TextureBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vector3f.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>

@@ -84,14 +84,18 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GLTexture.cpp" />
     <ClCompile Include="Model_3DS.cpp" />
     <ClCompile Include="OpenGLMeshLoader.cpp" />
+    <ClCompile Include="Vector3f.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="D:\4th semester 2nd year teaching\Graphics\Labs\new implementation\OpenGLMeshLoader\TextureBuilder.h" />
     <ClInclude Include="GLTexture.h" />
     <ClInclude Include="Model_3DS.h" />
+    <ClInclude Include="Vector3f.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
