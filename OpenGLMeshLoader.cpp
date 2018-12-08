@@ -1,16 +1,19 @@
-
 #include "TextureBuilder.h"
 #include "Model_3DS.h"
 #include "GLTexture.h"
 #include <glut.h>
 #include <stdlib.h>
 #include <vector>
+#include "Vector3f.h"
+#include "Camera.h" 
+
+#define GLUT_KEY_ESCAPE 27
 
 using namespace std;
 
 struct Shape;
 const int SKYBOX_BOUNDARY = 10;	
-const float GAME_SPEED = 2.0;
+const float GAME_SPEED = 0.01;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -59,6 +62,18 @@ Vector At(0, 0, 0);
 Vector Up(0, 1, 0);
 
 int cameraZoom = 0;
+
+Camera camera = Camera(1.0f,  1.0f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f);
+
+void setupCamera() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60, 640 / 480, 0.001, 100);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	camera.look();
+}
 
 // Model Variables
 Model_3DS model_house;
@@ -206,7 +221,7 @@ void renderFace(Vector normal)
 	glPopMatrix();
 }
 
-void renderObstacle(int x,int lane)
+void renderObstacle(float x,float lane)
 {
 	//glDisable(GL_LIGHTING);	// Disable lighting 
 
@@ -216,6 +231,7 @@ void renderObstacle(int x,int lane)
 
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
+	glPushMatrix();
 	glTranslated(x, 0, lane);
 
 	// Top Face
@@ -291,6 +307,8 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 //=======================================================================
 void myDisplay(void)
 {
+	setupCamera();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -323,7 +341,7 @@ void myDisplay(void)
 
 	for (unsigned i = 0; i < obstacles.size();i++)
 	{
-		//renderObstacle(obstacles[i].x, obstacles[i].lane);
+		renderObstacle(obstacles[i].x, obstacles[i].lane);
 	}
 
 	//sky box
@@ -345,98 +363,6 @@ void myDisplay(void)
 
 
 	glutSwapBuffers();
-}
-
-//=======================================================================
-// Keyboard Function
-//=======================================================================
-void myKeyboard(unsigned char button, int x, int y)
-{
-	switch (button)
-	{
-	case 'w':
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		break;
-	case 'r':
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		break;
-	case 27:
-		exit(0);
-		break;
-	default:
-		break;
-	}
-
-	glutPostRedisplay();
-}
-
-//=======================================================================
-// Motion Function
-//=======================================================================
-void myMotion(int x, int y)
-{
-	y = HEIGHT - y;
-
-	if (cameraZoom - y > 0)
-	{
-		Eye.x += -0.1;
-		Eye.z += -0.1;
-	}
-	else
-	{
-		Eye.x += 0.1;
-		Eye.z += 0.1;
-	}
-
-	cameraZoom = y;
-
-	glLoadIdentity();	//Clear Model_View Matrix
-
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
-
-	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-	glutPostRedisplay();	//Re-draw scene 
-}
-
-//=======================================================================
-// Mouse Function
-//=======================================================================
-void myMouse(int button, int state, int x, int y)
-{
-	y = HEIGHT - y;
-
-	if (state == GLUT_DOWN)
-	{
-		cameraZoom = y;
-	}
-}
-
-//=======================================================================
-// Reshape Function
-//=======================================================================
-void myReshape(int w, int h)
-{
-	if (h == 0) {
-		h = 1;
-	}
-
-	WIDTH = w;
-	HEIGHT = h;
-
-	// set the drawable region of the window
-	glViewport(0, 0, w, h);
-
-	// set up the projection matrix 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(fovy, (GLdouble)WIDTH / (GLdouble)HEIGHT, zNear, zFar);
-
-	// go back to modelview matrix so we can move the objects about
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);
 }
 
 //=======================================================================
@@ -462,10 +388,62 @@ void anime()
 {
 	for (int i = 0; i < obstacles.size();i++)
 	{
-	//	obstacles[i].x-=GAME_SPEED;
+		obstacles[i].x-=GAME_SPEED;
 	}
 
 	for (int i = 0; i < 1e7; i++);
+	glutPostRedisplay();
+}
+
+
+
+void Keyboard(unsigned char key, int x, int y) {
+	float d = 0.8;
+
+	switch (key) {
+	case 'w':
+		camera.moveY(d);
+		break;
+	case 's':
+		camera.moveY(-d);
+		break;
+	case 'a':
+		camera.moveX(d);
+		break;
+	case 'd':
+		camera.moveX(-d);
+		break;
+	case 'q':
+		camera.moveZ(d);
+		break;
+	case 'e':
+		camera.moveZ(-d);
+		break;
+	case GLUT_KEY_ESCAPE:
+		exit(EXIT_SUCCESS);
+	}
+
+	glutPostRedisplay();
+}
+
+void Special(int key, int x, int y) {
+	float a = 4.0;
+
+	switch (key) {
+	case GLUT_KEY_UP:
+		camera.rotateX(a);
+		break;
+	case GLUT_KEY_DOWN:
+		camera.rotateX(-a);
+		break;
+	case GLUT_KEY_LEFT:
+		camera.rotateY(a);
+		break;
+	case GLUT_KEY_RIGHT:
+		camera.rotateY(-a);
+		break;
+	}
+
 	glutPostRedisplay();
 }
 
@@ -488,9 +466,11 @@ void main(int argc, char** argv)
 
 	glutDisplayFunc(myDisplay);
 
-	//glutIdleFunc(anime);
+	glutIdleFunc(anime);
 
-	glutKeyboardFunc(myKeyboard);
+	//glutKeyboardFunc(myKeyboard);
+	glutKeyboardFunc(Keyboard);
+	glutSpecialFunc(Special);
 
 	//glutMotionFunc(myMotion);
 
@@ -511,4 +491,3 @@ void main(int argc, char** argv)
 
 	glutMainLoop();
 }
-
