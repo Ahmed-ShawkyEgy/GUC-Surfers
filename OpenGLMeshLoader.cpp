@@ -16,6 +16,8 @@
 
 using namespace std;
 
+int lanes[3] = { LEFT_LANE,CENTER_LANE,RIGHT_LANE };
+
 struct Shape;
 const int SKYBOX_BOUNDARY = 40;	
 const float GAME_SPEED = 0.4;
@@ -28,6 +30,7 @@ char title[] = "3D Model Loader Sample";
 
 float groundTransform = 0;
 
+int player_lane = 2;
 vector<Shape> obstacles;
 
 struct Shape {
@@ -275,13 +278,15 @@ void myDisplay(void)
 	RenderGround();
 	glPopMatrix();
 
+	// Draw Player
 	glPushMatrix();
-	glTranslatef(0, 0, 0);
+	glTranslatef(0, 0, lanes[player_lane]);
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
 	glPopMatrix();
 
+	// Draw all obstacles
 	for (unsigned i = 0; i < obstacles.size();i++)
 	{
 		renderObstacle(obstacles[i].x, obstacles[i].lane);
@@ -377,6 +382,14 @@ void Keyboard(unsigned char key, int x, int y) {
 		camera = Camera(0.5f, 2.0f, 0.0f, 1.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f);;
 		break;
 
+	case 'o':
+		player_lane--;
+		if (player_lane < 0)player_lane = 0;
+		break;
+	case 'p':
+		player_lane++;
+		if (player_lane > 2)player_lane = 2;
+		break;
 	case GLUT_KEY_ESCAPE:
 		exit(EXIT_SUCCESS);
 	}
@@ -408,7 +421,7 @@ void Special(int key, int x, int y) {
 void dropObstacle(int v)
 {
 	boolean dropAllowed = random(0, 100) < 70;
-	int lanes[3] = {LEFT_LANE,CENTER_LANE,RIGHT_LANE};
+	
 	if (dropAllowed)
 	{
 		printf("drop allowed\n");
@@ -423,10 +436,6 @@ void dropObstacle(int v)
 //=======================================================================
 void main(int argc, char** argv)
 {
-	//addObstacle(LEFT_LANE);
-	addObstacle(RIGHT_LANE);
-	//addObstacle(CENTER_LANE);
-
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
