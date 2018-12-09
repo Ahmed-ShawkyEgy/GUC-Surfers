@@ -12,6 +12,7 @@
 #define CENTER_LANE 0
 #define RIGHT_LANE 2
 #define GROUND_LENGTH 500
+#define RESPAWN_POSITION 200
 
 using namespace std;
 
@@ -235,7 +236,7 @@ void renderObstacle(float x,float lane)
 // adds an obstacle behind the skybox
 void addObstacle(int lane)
 {
-	obstacles.push_back(Shape(SKYBOX_BOUNDARY,lane));
+	obstacles.push_back(Shape(RESPAWN_POSITION,lane));
 }
 
 void destroyAtIndex(int index, vector<Shape> &shapes)
@@ -247,6 +248,10 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 	shapes.pop_back();
 }
 
+int random(int lower, int upper)
+{
+	return (rand() % (upper - lower + 1)) + lower;
+}
 
 //=======================================================================
 // Display Function
@@ -400,14 +405,27 @@ void Special(int key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void dropObstacle(int v)
+{
+	boolean dropAllowed = random(0, 100) < 70;
+	int lanes[3] = {LEFT_LANE,CENTER_LANE,RIGHT_LANE};
+	if (dropAllowed)
+	{
+		printf("drop allowed\n");
+		int lane = lanes[random(0, 2)];
+		addObstacle(lane);
+	}
+	glutTimerFunc(1000, dropObstacle, 0);
+}
+
 //=======================================================================
 // Main Function
 //=======================================================================
 void main(int argc, char** argv)
 {
-	addObstacle(LEFT_LANE);
+	//addObstacle(LEFT_LANE);
 	addObstacle(RIGHT_LANE);
-	addObstacle(CENTER_LANE);
+	//addObstacle(CENTER_LANE);
 
 	glutInit(&argc, argv);
 
@@ -422,6 +440,8 @@ void main(int argc, char** argv)
 	glutDisplayFunc(myDisplay);
 
 	glutIdleFunc(anime);
+
+	glutTimerFunc(0, dropObstacle, 0);
 
 	glutKeyboardFunc(Keyboard);
 
@@ -438,3 +458,5 @@ void main(int argc, char** argv)
 
 	glutMainLoop();
 }
+
+
