@@ -11,7 +11,7 @@
 #define LEFT_LANE -2
 #define CENTER_LANE 0
 #define RIGHT_LANE 2
-#define GROUND_LENGTH 500
+#define GROUND_LENGTH 5000
 #define RESPAWN_POSITION 200
 
 using namespace std;
