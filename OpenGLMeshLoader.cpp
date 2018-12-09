@@ -17,7 +17,7 @@ const float GAME_SPEED = 0.1;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
-
+float move_truck = 0;
 GLuint tex;
 char title[] = "3D Model Loader Sample";
 
@@ -277,7 +277,7 @@ void myDisplay(void)
 
 
 	glPushMatrix();
-	glTranslatef(0, 0, 0);
+	glTranslatef(0, 0, move_truck);
 	glScalef(0.7, 0.7, 0.7);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
@@ -348,6 +348,7 @@ void anime()
 
 void Keyboard(unsigned char key, int x, int y) {
 	float d = 0.8;
+	float x_truck_cam = 0.1;
 
 	switch (key) {
 	case 'w':
@@ -356,11 +357,18 @@ void Keyboard(unsigned char key, int x, int y) {
 	case 's':
 		camera.moveY(-d);
 		break;
-	case 'a':
-		camera.moveX(d);
-		break;
 	case 'd':
-		camera.moveX(-d);
+		if (move_truck < 2.5)
+		{
+			move_truck += 0.1;
+			camera.moveX(-x_truck_cam);
+		}
+		break;
+	case 'a':
+		if (move_truck > -2.5) {
+		move_truck -= 0.1;
+		camera.moveX(x_truck_cam);
+		}
 		break;
 	case 'q':
 		camera.moveZ(d);
@@ -370,11 +378,11 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 
 	case 't':
-		camera = Camera(-8.0f, 7.0f, 0.0f, -1.0f, 2.7f, 0.0f, 0.0f, 1.0f, 0.0f);
+		camera = Camera(-8.0f, 7.0f, move_truck, -1.0f, 2.7f, move_truck, 0.0f, 1.0f, 0.0f);
 		break;
 
 	case 'f':
-		camera = Camera(0.5f, 2.0f, 0.0f, 1.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f);;
+		camera = Camera(0.5f, 2.0f, move_truck, 1.0f, 2.0f, move_truck, 0.0f, 1.0f, 0.0f);;
 		break;
 
 	case GLUT_KEY_ESCAPE:
