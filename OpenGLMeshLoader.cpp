@@ -13,19 +13,13 @@ using namespace std;
 
 struct Shape;
 const int SKYBOX_BOUNDARY = 10;	
-const float GAME_SPEED = 0.01;
+const float GAME_SPEED = 0.1;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
 
 GLuint tex;
 char title[] = "3D Model Loader Sample";
-
-// 3D Projection Options
-GLdouble fovy = 45.0;
-GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
-GLdouble zNear = 0.1;
-GLdouble zFar = 100;
 
 
 vector<Shape> obstacles;
@@ -39,36 +33,14 @@ struct Shape {
 	};
 };
 
-class Vector
-{
-public:
-	GLdouble x, y, z;
-	Vector() {}
-	Vector(GLdouble _x, GLdouble _y, GLdouble _z) : x(_x), y(_y), z(_z) {}
-	//================================================================================================//
-	// Operator Overloading; In C++ you can override the behavior of operators for you class objects. //
-	// Here we are overloading the += operator to add a given value to all vector coordinates.        //
-	//================================================================================================//
-	void operator +=(float value)
-	{
-		x += value;
-		y += value;
-		z += value;
-	}
-};
-
-Vector Eye(20, 5, 20);
-Vector At(0, 0, 0);
-Vector Up(0, 1, 0);
-
 int cameraZoom = 0;
 
-Camera camera = Camera(1.0f,  1.0f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f);
+Camera camera = Camera(1.0f, 1.0f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f);
 
 void setupCamera() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, 640 / 480, 0.001, 100);
+	gluPerspective(60, 640 / 480, 0.001, 200);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -133,43 +105,6 @@ void InitMaterial()
 	glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
 }
 
-//=======================================================================
-// OpengGL Configuration Function
-//=======================================================================
-void myInit(void)
-{
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-
-	glMatrixMode(GL_PROJECTION);
-
-	glLoadIdentity();
-
-	gluPerspective(fovy, aspectRatio, zNear, zFar);
-	//*******************************************************************************************//
-	// fovy:			Angle between the bottom and top of the projectors, in degrees.			 //
-	// aspectRatio:		Ratio of width to height of the clipping plane.							 //
-	// zNear and zFar:	Specify the front and back clipping planes distances from camera.		 //
-	//*******************************************************************************************//
-
-	glMatrixMode(GL_MODELVIEW);
-
-	glLoadIdentity();
-
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);
-	//*******************************************************************************************//
-	// EYE (ex, ey, ez): defines the location of the camera.									 //
-	// AT (ax, ay, az):	 denotes the direction where the camera is aiming at.					 //
-	// UP (ux, uy, uz):  denotes the upward orientation of the camera.							 //
-	//*******************************************************************************************//
-
-	InitLightSource();
-
-	InitMaterial();
-
-	glEnable(GL_DEPTH_TEST);
-
-	glEnable(GL_NORMALIZE);
-}
 
 //=======================================================================
 // Render Ground Function
@@ -204,7 +139,7 @@ void RenderGround()
 }
 
 // Draws a unit quad
-void renderFace(Vector normal)
+void renderFace(Vector3f normal)
 {
 	glPushMatrix();
 	glBegin(GL_QUADS);
@@ -237,27 +172,27 @@ void renderObstacle(float x,float lane)
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
-	renderFace(Vector(0, 1, 0));
+	renderFace(Vector3f(0, 1, 0));
 	glPopMatrix();
 
 	// Bottom Face
 	glPushMatrix();
 	glTranslated(0, -1, 0);
-	renderFace(Vector(0, -1, 0));
+	renderFace(Vector3f(0, -1, 0));
 	glPopMatrix();
 
 	// Left Face
 	glPushMatrix();
 	glRotated(90, 0, 0, 1);
 	glTranslated(0,1, 0);
-	renderFace(Vector(1,0, 0));
+	renderFace(Vector3f(1,0, 0));
 	glPopMatrix();
 
 	// Right Face
 	glPushMatrix();
 	glRotated(90, 0, 0, 1);
 	glTranslated(0,-1, 0);
-	renderFace(Vector(-1, 0, 0));
+	renderFace(Vector3f(-1, 0, 0));
 	glPopMatrix();
 
 	// Front Face
@@ -265,7 +200,7 @@ void renderObstacle(float x,float lane)
 	glRotated(90, 0, 0, 1);
 	glRotated(90, 1, 0, 0);
 	glTranslated(0, 1, 0);
-	renderFace(Vector(1, 0, 0));
+	renderFace(Vector3f(1, 0, 0));
 	glPopMatrix();
 
 
@@ -274,7 +209,7 @@ void renderObstacle(float x,float lane)
 	glRotated(90, 0, 0, 1);
 	glRotated(90, 1, 0, 0);
 	glTranslated(0, -1, 0);
-	renderFace(Vector(1, 0, 0));
+	renderFace(Vector3f(1, 0, 0));
 	glPopMatrix();
 
 
@@ -468,17 +403,9 @@ void main(int argc, char** argv)
 
 	glutIdleFunc(anime);
 
-	//glutKeyboardFunc(myKeyboard);
 	glutKeyboardFunc(Keyboard);
+
 	glutSpecialFunc(Special);
-
-	//glutMotionFunc(myMotion);
-
-	//glutMouseFunc(myMouse);
-
-	//glutReshapeFunc(myReshape);
-
-	myInit();
 
 	LoadAssets();
 	glEnable(GL_DEPTH_TEST);

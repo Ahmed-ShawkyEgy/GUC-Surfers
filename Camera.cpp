@@ -35,10 +35,6 @@
 		view = view * cos(DEG2RAD(a)) + up * sin(DEG2RAD(a));
 		up = view.cross(right);
 		center = eye + view;
-
-		/*printf("eye : %f , %f , %f\n", eye.x, eye.y, eye.z);
-		printf("center : %f , %f , %f\n", center.x, center.y, center.z);
-		printf("up : %f , %f , %f\n\n", up.x, up.y, up.z);*/
 	}
 
 	void Camera::rotateY(float a) {
