@@ -11,7 +11,7 @@
 #define LEFT_LANE -2
 #define CENTER_LANE 0
 #define RIGHT_LANE 2
-#define GROUND_LENGTH 500
+#define GROUND_LENGTH 10000
 #define RESPAWN_POSITION 200
 
 using namespace std;
@@ -20,11 +20,10 @@ int lanes[3] = { LEFT_LANE,CENTER_LANE,RIGHT_LANE };
 
 struct Shape;
 const int SKYBOX_BOUNDARY = 40;	
-const float GAME_SPEED = 0.4;
+const float GAME_SPEED = 0.8;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
-float move_truck = 0;
 GLuint tex;
 char title[] = "3D Model Loader Sample";
 
@@ -242,6 +241,12 @@ void addObstacle(int lane)
 	obstacles.push_back(Shape(RESPAWN_POSITION,lane));
 }
 
+// TODO implement
+void onObstacleCollision()
+{
+	printf("Collision with obstacle\n");
+}
+
 void destroyAtIndex(int index, vector<Shape> &shapes)
 {
 	// Swap this element with the last one to pop from the vector
@@ -280,9 +285,10 @@ void myDisplay(void)
 	glPopMatrix();
 
 
+	// Draw Player
 	glPushMatrix();
 
-	glTranslatef(0, 0, move_truck);
+	glTranslatef(0, 0, lanes[player_lane]);
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
@@ -292,7 +298,7 @@ void myDisplay(void)
 	// Draw all obstacles
 	for (unsigned i = 0; i < obstacles.size();i++)
 	{
-		renderObstacle(obstacles[i].x, obstacles[i].lane);
+		renderObstacle(obstacles[i].x, lanes[obstacles[i].lane]);
 	}
 
 	//sky box
@@ -340,6 +346,13 @@ void anime()
 	for (int i = 0; i < obstacles.size();i++)
 	{
 		obstacles[i].x-=GAME_SPEED;
+		
+		// If player collided with obstacle
+		if (obstacles[i].lane == player_lane &&
+			obstacles[i].x <= 1 && obstacles[i].x >= 0)
+		{
+			onObstacleCollision();
+		}
 
 		// If the obstacle is way behind the player
 		if (obstacles[i].x < -20)
@@ -349,7 +362,7 @@ void anime()
 	groundTransform -= GAME_SPEED;
 	if (groundTransform < -GROUND_LENGTH / 8)
 	{
-		groundTransform = 0;
+		//groundTransform = 0;
 	}
 
 	for (int i = 0; i < 1e7; i++);
@@ -370,16 +383,17 @@ void Keyboard(unsigned char key, int x, int y) {
 		camera.moveY(-d);
 		break;
 	case 'd':
-		if (move_truck < 2)
+		if (player_lane < 2)
 		{
-			move_truck += 2;
+			player_lane++;
 			camera.moveX(-x_truck_cam);
 		}
 		break;
 	case 'a':
-		if (move_truck > -2) {
-		move_truck -= 2;
-		camera.moveX(x_truck_cam);
+		if (player_lane > 0)
+		{
+			player_lane--;
+			camera.moveX(x_truck_cam);
 		}
 		break;
 	case 'q':
@@ -390,20 +404,11 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 
 	case 't':
-		camera = Camera(-8.0f, 7.0f, move_truck, -1.0f, 2.7f, move_truck, 0.0f, 1.0f, 0.0f);
+		camera = Camera(-8.0f, 7.0f, lanes[player_lane], -1.0f, 2.7f, lanes[player_lane], 0.0f, 1.0f, 0.0f);
 		break;
 
 	case 'f':
-		camera = Camera(0.5f, 2.0f, move_truck, 1.0f, 2.0f, move_truck, 0.0f, 1.0f, 0.0f);;
-		break;
-
-	case 'o':
-		player_lane--;
-		if (player_lane < 0)player_lane = 0;
-		break;
-	case 'p':
-		player_lane++;
-		if (player_lane > 2)player_lane = 2;
+		camera = Camera(0.5f, 2.0f, lanes[player_lane], 1.0f, 2.0f, lanes[player_lane], 0.0f, 1.0f, 0.0f);;
 		break;
 	case GLUT_KEY_ESCAPE:
 		exit(EXIT_SUCCESS);
@@ -439,8 +444,7 @@ void dropObstacle(int v)
 	
 	if (dropAllowed)
 	{
-		printf("drop allowed\n");
-		int lane = lanes[random(0, 2)];
+		int lane = random(0, 2);
 		addObstacle(lane);
 	}
 	glutTimerFunc(1000, dropObstacle, 0);
