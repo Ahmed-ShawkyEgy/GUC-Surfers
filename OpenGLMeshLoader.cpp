@@ -30,7 +30,7 @@ char title[] = "3D Model Loader Sample";
 
 float groundTransform = 0;
 
-int player_lane = 2;
+int player_lane = 1;
 vector<Shape> obstacles;
 
 struct Shape {
@@ -337,6 +337,10 @@ void anime()
 	for (int i = 0; i < obstacles.size();i++)
 	{
 		obstacles[i].x-=GAME_SPEED;
+
+		// If the obstacle is way behind the player
+		if (obstacles[i].x < -20)
+			destroyAtIndex(i--, obstacles);
 	}
 
 	groundTransform -= GAME_SPEED;
