@@ -360,7 +360,7 @@ void anime()
 
 void Keyboard(unsigned char key, int x, int y) {
 	float d = 0.8;
-	float x_truck_cam = 0.2;
+	float x_truck_cam = 2;
 
 	switch (key) {
 	case 'w':
@@ -372,13 +372,13 @@ void Keyboard(unsigned char key, int x, int y) {
 	case 'd':
 		if (move_truck < 2)
 		{
-			move_truck += 0.2;
+			move_truck += 2;
 			camera.moveX(-x_truck_cam);
 		}
 		break;
 	case 'a':
 		if (move_truck > -2) {
-		move_truck -= 0.2;
+		move_truck -= 2;
 		camera.moveX(x_truck_cam);
 		}
 		break;
