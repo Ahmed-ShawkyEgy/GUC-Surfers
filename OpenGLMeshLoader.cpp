@@ -12,7 +12,7 @@
 using namespace std;
 
 struct Shape;
-const int SKYBOX_BOUNDARY = 10;	
+const int SKYBOX_BOUNDARY = 40;	
 const float GAME_SPEED = 0.1;
 
 int WIDTH = 1280;
@@ -278,7 +278,7 @@ void myDisplay(void)
 
 	glPushMatrix();
 	glTranslatef(0, 0, 0);
-	glScalef(0.7, 0.7, 0.7);
+	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
 	glPopMatrix();
