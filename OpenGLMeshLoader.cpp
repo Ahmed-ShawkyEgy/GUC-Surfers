@@ -8,12 +8,19 @@
 #include "Camera.h" 
 
 #define GLUT_KEY_ESCAPE 27
+#define LEFT_LANE -2
+#define CENTER_LANE 0
+#define RIGHT_LANE 2
+#define GROUND_LENGTH 500
+#define RESPAWN_POSITION 200
 
 using namespace std;
 
+int lanes[3] = { LEFT_LANE,CENTER_LANE,RIGHT_LANE };
+
 struct Shape;
-const int SKYBOX_BOUNDARY = 10;	
-const float GAME_SPEED = 0.1;
+const int SKYBOX_BOUNDARY = 40;	
+const float GAME_SPEED = 0.4;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -21,7 +28,9 @@ float move_truck = 0;
 GLuint tex;
 char title[] = "3D Model Loader Sample";
 
+float groundTransform = 0;
 
+int player_lane = 1;
 vector<Shape> obstacles;
 
 struct Shape {
@@ -129,13 +138,13 @@ void RenderGround()
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);	// Set quad normal direction.
 	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
-	glVertex3f(-20, 0, -20);
+	glVertex3f(-20, 0, -3);
 	glTexCoord2f(5, 0);
-	glVertex3f(20, 0, -20);
+	glVertex3f(GROUND_LENGTH, 0, -3);
 	glTexCoord2f(5, 5);
-	glVertex3f(20, 0, 20);
+	glVertex3f(GROUND_LENGTH, 0, 3);
 	glTexCoord2f(0, 5);
-	glVertex3f(-20, 0, 20);
+	glVertex3f(-20, 0, 3);
 	glEnd();
 	glPopMatrix();
 
@@ -230,7 +239,7 @@ void renderObstacle(float x,float lane)
 // adds an obstacle behind the skybox
 void addObstacle(int lane)
 {
-	obstacles.push_back(Shape(SKYBOX_BOUNDARY,lane));
+	obstacles.push_back(Shape(RESPAWN_POSITION,lane));
 }
 
 void destroyAtIndex(int index, vector<Shape> &shapes)
@@ -242,6 +251,10 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 	shapes.pop_back();
 }
 
+int random(int lower, int upper)
+{
+	return (rand() % (upper - lower + 1)) + lower;
+}
 
 //=======================================================================
 // Display Function
@@ -259,35 +272,24 @@ void myDisplay(void)
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
 
+
 	// Draw Ground
-	//RenderGround();
-
-	// Draw Tree Model
-	/*glPushMatrix();
-	glTranslatef(10, 0, 0);
-	glScalef(0.7, 0.7, 0.7);
-	model_tree.Draw();
-	glPopMatrix();*/
-
-	// Draw house Model
-	/*glPushMatrix();
-	glRotatef(90.f, 1, 0, 0);
-	model_house.Draw();
-	glPopMatrix();*/
+	glPushMatrix();
+	glTranslated(groundTransform, 0, 0);
+	RenderGround();
+	glPopMatrix();
 
 
 	glPushMatrix();
+
 	glTranslatef(0, 0, move_truck);
-	glScalef(0.7, 0.7, 0.7);
+	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
+
 	glPopMatrix();
 
-	glPushMatrix();
-	renderObstacle(0,3);
-	renderObstacle(0,-3);
-	glPopMatrix();
-
+	// Draw all obstacles
 	for (unsigned i = 0; i < obstacles.size();i++)
 	{
 		renderObstacle(obstacles[i].x, obstacles[i].lane);
@@ -338,6 +340,16 @@ void anime()
 	for (int i = 0; i < obstacles.size();i++)
 	{
 		obstacles[i].x-=GAME_SPEED;
+
+		// If the obstacle is way behind the player
+		if (obstacles[i].x < -20)
+			destroyAtIndex(i--, obstacles);
+	}
+
+	groundTransform -= GAME_SPEED;
+	if (groundTransform < -GROUND_LENGTH / 8)
+	{
+		groundTransform = 0;
 	}
 
 	for (int i = 0; i < 1e7; i++);
@@ -348,7 +360,7 @@ void anime()
 
 void Keyboard(unsigned char key, int x, int y) {
 	float d = 0.8;
-	float x_truck_cam = 0.1;
+	float x_truck_cam = 0.2;
 
 	switch (key) {
 	case 'w':
@@ -358,15 +370,15 @@ void Keyboard(unsigned char key, int x, int y) {
 		camera.moveY(-d);
 		break;
 	case 'd':
-		if (move_truck < 2.5)
+		if (move_truck < 2)
 		{
-			move_truck += 0.1;
+			move_truck += 0.2;
 			camera.moveX(-x_truck_cam);
 		}
 		break;
 	case 'a':
-		if (move_truck > -2.5) {
-		move_truck -= 0.1;
+		if (move_truck > -2) {
+		move_truck -= 0.2;
 		camera.moveX(x_truck_cam);
 		}
 		break;
@@ -385,6 +397,14 @@ void Keyboard(unsigned char key, int x, int y) {
 		camera = Camera(0.5f, 2.0f, move_truck, 1.0f, 2.0f, move_truck, 0.0f, 1.0f, 0.0f);;
 		break;
 
+	case 'o':
+		player_lane--;
+		if (player_lane < 0)player_lane = 0;
+		break;
+	case 'p':
+		player_lane++;
+		if (player_lane > 2)player_lane = 2;
+		break;
 	case GLUT_KEY_ESCAPE:
 		exit(EXIT_SUCCESS);
 	}
@@ -413,13 +433,24 @@ void Special(int key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void dropObstacle(int v)
+{
+	boolean dropAllowed = random(0, 100) < 70;
+	
+	if (dropAllowed)
+	{
+		printf("drop allowed\n");
+		int lane = lanes[random(0, 2)];
+		addObstacle(lane);
+	}
+	glutTimerFunc(1000, dropObstacle, 0);
+}
+
 //=======================================================================
 // Main Function
 //=======================================================================
 void main(int argc, char** argv)
 {
-	addObstacle(0);
-
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -433,6 +464,8 @@ void main(int argc, char** argv)
 	glutDisplayFunc(myDisplay);
 
 	glutIdleFunc(anime);
+
+	glutTimerFunc(0, dropObstacle, 0);
 
 	glutKeyboardFunc(Keyboard);
 
@@ -449,3 +482,5 @@ void main(int argc, char** argv)
 
 	glutMainLoop();
 }
+
+

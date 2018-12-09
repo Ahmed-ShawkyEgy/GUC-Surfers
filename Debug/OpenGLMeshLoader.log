@@ -1,6 +1,6 @@
 ﻿  OpenGLMeshLoader.cpp
 c:\users\moghazy\repos\guc-surfers\texturebuilder.h(27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\moghazy\repos\guc-surfers\texturebuilder.h(28): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(338): warning C4018: '<': signed/unsigned mismatch
+c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(340): warning C4018: '<': signed/unsigned mismatch
 Camera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
   OpenGLMeshLoader.vcxproj -> C:\Users\Moghazy\repos\GUC-Surfers\Debug\OpenGLMeshLoader.exe
