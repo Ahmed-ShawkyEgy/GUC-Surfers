@@ -8,12 +8,16 @@
 #include "Camera.h" 
 
 #define GLUT_KEY_ESCAPE 27
+#define LEFT_LANE -2
+#define CENTER_LANE 0
+#define RIGHT_LANE 2
+#define GROUND_LENGTH 500
 
 using namespace std;
 
 struct Shape;
 const int SKYBOX_BOUNDARY = 40;	
-const float GAME_SPEED = 0.1;
+const float GAME_SPEED = 0.4;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -21,6 +25,7 @@ int HEIGHT = 720;
 GLuint tex;
 char title[] = "3D Model Loader Sample";
 
+float groundTransform = 0;
 
 vector<Shape> obstacles;
 
@@ -129,13 +134,13 @@ void RenderGround()
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);	// Set quad normal direction.
 	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
-	glVertex3f(-20, 0, -20);
+	glVertex3f(-20, 0, -3);
 	glTexCoord2f(5, 0);
-	glVertex3f(20, 0, -20);
+	glVertex3f(GROUND_LENGTH, 0, -3);
 	glTexCoord2f(5, 5);
-	glVertex3f(20, 0, 20);
+	glVertex3f(GROUND_LENGTH, 0, 3);
 	glTexCoord2f(0, 5);
-	glVertex3f(-20, 0, 20);
+	glVertex3f(-20, 0, 3);
 	glEnd();
 	glPopMatrix();
 
@@ -260,32 +265,16 @@ void myDisplay(void)
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
 
 	// Draw Ground
-	//RenderGround();
-
-	// Draw Tree Model
-	/*glPushMatrix();
-	glTranslatef(10, 0, 0);
-	glScalef(0.7, 0.7, 0.7);
-	model_tree.Draw();
-	glPopMatrix();*/
-
-	// Draw house Model
-	/*glPushMatrix();
-	glRotatef(90.f, 1, 0, 0);
-	model_house.Draw();
-	glPopMatrix();*/
-
+	glPushMatrix();
+	glTranslated(groundTransform, 0, 0);
+	RenderGround();
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0, 0, 0);
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
-	glPopMatrix();
-
-	glPushMatrix();
-	renderObstacle(0,3);
-	renderObstacle(0,-3);
 	glPopMatrix();
 
 	for (unsigned i = 0; i < obstacles.size();i++)
@@ -338,6 +327,12 @@ void anime()
 	for (int i = 0; i < obstacles.size();i++)
 	{
 		obstacles[i].x-=GAME_SPEED;
+	}
+
+	groundTransform -= GAME_SPEED;
+	if (groundTransform < -GROUND_LENGTH / 8)
+	{
+		groundTransform = 0;
 	}
 
 	for (int i = 0; i < 1e7; i++);
@@ -410,7 +405,9 @@ void Special(int key, int x, int y) {
 //=======================================================================
 void main(int argc, char** argv)
 {
-	addObstacle(0);
+	addObstacle(LEFT_LANE);
+	addObstacle(RIGHT_LANE);
+	addObstacle(CENTER_LANE);
 
 	glutInit(&argc, argv);
 
