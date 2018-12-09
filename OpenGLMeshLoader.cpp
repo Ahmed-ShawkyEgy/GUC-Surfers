@@ -35,12 +35,18 @@ struct Shape {
 
 int cameraZoom = 0;
 
-Camera camera = Camera(1.0f, 1.0f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f);
+Camera camera = Camera( 0.5f, 2.0f, 0.0f,  1.0f, 2.0f, 0.0f,  0.0f,  1.0f,  0.0f);
+//*******************************************************************************************//
+// EYE (ex, ey, ez): defines the location of the camera.									 //
+// AT (ax, ay, az):	 denotes the direction where the camera is aiming at.					 //
+// UP (ux, uy, uz):  denotes the upward orientation of the camera.							 //
+//*******************************************************************************************//
 
 void setupCamera() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, 640 / 480, 0.001, 200);
+	gluPerspective(60, 1280 / 720, 0.001, 200);
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -49,7 +55,7 @@ void setupCamera() {
 
 // Model Variables
 Model_3DS model_house;
-Model_3DS model_tree;
+Model_3DS model_car;
 
 // Textures
 GLTexture tex_ground;
@@ -269,6 +275,14 @@ void myDisplay(void)
 	model_house.Draw();
 	glPopMatrix();*/
 
+
+	glPushMatrix();
+	glTranslatef(0, 0, 0);
+	glScalef(0.7, 0.7, 0.7);
+	glRotatef(-90.f, 0, 1, 0);
+	model_car.Draw();
+	glPopMatrix();
+
 	glPushMatrix();
 	renderObstacle(0,3);
 	renderObstacle(0,-3);
@@ -307,7 +321,7 @@ void LoadAssets()
 {
 	// Loading Model files
 	model_house.Load("Models/house/house.3DS");
-	model_tree.Load("Models/tree/Tree1.3ds");
+	model_car.Load("Models/car/ausfb.3ds");
 
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
@@ -354,6 +368,15 @@ void Keyboard(unsigned char key, int x, int y) {
 	case 'e':
 		camera.moveZ(-d);
 		break;
+
+	case 't':
+		camera = Camera(-8.0f, 7.0f, 0.0f, -1.0f, 2.7f, 0.0f, 0.0f, 1.0f, 0.0f);
+		break;
+
+	case 'f':
+		camera = Camera(0.5f, 2.0f, 0.0f, 1.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f);;
+		break;
+
 	case GLUT_KEY_ESCAPE:
 		exit(EXIT_SUCCESS);
 	}
