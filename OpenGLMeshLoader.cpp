@@ -231,7 +231,7 @@ void renderCoin(float x, float lane) {
 
 	//Draw Coins
 	glPushMatrix();
-	glTranslatef(x + 5, 0.75, lane);
+	glTranslatef(x + 5, 0.75 + 0.5 , lane);
 	glScalef(0.01, 0.015, 0.01);
 	glRotatef(coin_rotation_angle, 0, 1, 0);
 	coin_model.Draw();
