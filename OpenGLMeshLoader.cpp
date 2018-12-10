@@ -250,8 +250,8 @@ void renderObstacle(float x, float lane)
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
 	glPushMatrix();
-	glTranslated(x, 1, lane);
 
+	glTranslated(x, 1, lane);
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
@@ -360,6 +360,8 @@ void myDisplay(void)
 
 	// Display Score
 	char* strScore[20];
+
+
 	sprintf((char *)strScore, "Score = %d/%d", score, maxScore);
 	print(50, 50, (char *)strScore);
 
