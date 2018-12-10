@@ -232,7 +232,7 @@ void renderCoin(float x, float lane) {
 
 	//Draw Coins
 	glPushMatrix();
-	glTranslatef(x + 5, 0.75 + 0.5 , lane);
+	glTranslatef(x + 5, 0.75 + 0.5, lane);
 	glScalef(0.01, 0.015, 0.01);
 	glRotatef(coin_rotation_angle, 0, 1, 0);
 	coin_model.Draw();
@@ -252,7 +252,7 @@ void renderObstacle(float x, float lane)
 
 	glPushMatrix();
 
-	glTranslated(x, 1.55, lane);
+	glTranslated(x, 1, lane);
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
@@ -376,15 +376,15 @@ void myDisplay(void)
 	glPushMatrix();
 	if (player_lane == 0)
 	{
-		glTranslatef(-10, score_pos , 10);
+		glTranslatef(-10, score_pos, 10);
 	}
-	 else if (player_lane ==  1)
+	else if (player_lane == 1)
 	{
 
 		glTranslatef(-10, score_pos, 12);
 
 	}
-	 else {
+	else {
 		glTranslatef(-10, score_pos, 14);
 
 	}
