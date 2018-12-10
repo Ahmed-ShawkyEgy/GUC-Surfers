@@ -25,13 +25,16 @@ const float GAME_SPEED = 0.8;
 int WIDTH = 1280;
 int HEIGHT = 720;
 GLuint tex;
-char title[] = "3D Model Loader Sample";
+char title[] = "GUC Surfers";
 
 float groundTransform = 0;
 
 int coin_rotation_angle;
 
 int player_lane = 1;
+int score = 0;
+int maxScore = 10;
+
 vector<Shape> obstacles;
 vector<Shape> coins;
 
@@ -72,6 +75,23 @@ Model_3DS coin_model;
 // Textures
 GLTexture tex_ground;
 GLTexture tex_wood;
+
+void print(int x,int y, char *string)
+{
+	int len, i;
+
+	//set the position of the text in the window using the x and y coordinates
+	glRasterPos2f(x, y);
+
+	//get the length of the string to display
+	len = (int)strlen(string);
+
+	//loop to display character by character
+	for (i = 0; i < len; i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+	}
+}
 
 //=======================================================================
 // Lighting Configuration Function
@@ -197,7 +217,7 @@ void renderObstacle(float x,float lane)
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
 	glPushMatrix();
-	glTranslated(x, 0, lane);
+	glTranslated(x, 4, lane);
 
 	// Top Face
 	glPushMatrix();
@@ -281,7 +301,6 @@ void onObstacleCollision()
 
 void onCoinCollision(int i)
 {
-	destroyAtIndex(i, coins);
 	printf("Collision with Coin\n");
 }
 
@@ -305,6 +324,14 @@ void myDisplay(void)
 	GLfloat lightPosition[] = { 0.0f, 100.0f, 0.0f, 0.0f };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
+
+	// Display Score
+	char* strScore[20];
+	sprintf((char *)strScore, "Score = %d/%d", score,maxScore);
+	print(50,50, (char *)strScore);
+
+	// Display Level
+
 
 
 	// Draw Ground
@@ -404,18 +431,18 @@ void anime()
 			coins[i].x <= 0.9 && coins[i].x >= 0)
 		{
 			onCoinCollision(i);
+			destroyAtIndex(i--, coins);
 		}
+	}
 
+	for (int i = 0; i < coins.size();i++)
+	{
 		// If the coin is way behind the player
-		if (coins[i].x < -20 && coins.size() > 0 )
+		if (coins[i].x < -20 && coins.size() > 0)
 			destroyAtIndex(i--, coins);
 	}
 
 	groundTransform -= GAME_SPEED;
-	if (groundTransform < -GROUND_LENGTH / 8)
-	{
-		//groundTransform = 0;
-	}
 
 	for (int i = 0; i < 1e7; i++);
 	glutPostRedisplay();
