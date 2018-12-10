@@ -34,7 +34,7 @@ int coin_rotation_angle;
 int player_lane = 1;
 int score = 0;
 int maxScore = 10;
-int score_pos = 0;
+int score_pos = -30;
 
 vector<Shape> obstacles;
 vector<Shape> coins;
