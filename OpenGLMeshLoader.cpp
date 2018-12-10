@@ -330,6 +330,16 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 // TODO implement
 void onObstacleCollision()
 {
+	groundTransform = 0;
+	score = 0;
+	for (int i = 0; i < obstacles.size(); i++)
+	{
+		obstacles[i].x -= 200;
+	}
+	for (int i = 0; i < coins.size(); i++)
+	{
+		coins[i].x -= 200;
+	}
 	printf("Collision with obstacle\n");
 }
 
@@ -479,6 +489,8 @@ void anime()
 		if (obstacles[i].x < -20)
 			destroyAtIndex(i--, obstacles);
 	}
+
+
 
 	for (int i = 0; i < coins.size(); i++)
 	{
