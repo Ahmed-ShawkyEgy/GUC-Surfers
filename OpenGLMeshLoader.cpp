@@ -217,11 +217,11 @@ void renderFace(Vector3f normal)
 	glNormal3f(normal.x, normal.y, normal.z);	// Set quad normal direction.
 	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
 	glVertex3f(-1, 0, -1);
-	glTexCoord2f(5, 0);
+	glTexCoord2f(1, 0);
 	glVertex3f(1, 0, -1);
-	glTexCoord2f(5, 5);
+	glTexCoord2f(1, 1);
 	glVertex3f(1, 0, 1);
-	glTexCoord2f(0, 5);
+	glTexCoord2f(0, 1);
 	glVertex3f(-1, 0, 1);
 	glEnd();
 	glPopMatrix();
@@ -435,7 +435,7 @@ void LoadAssets()
 	tex_ground.Load("Textures/ground.bmp");
 	tex_surface.Load("Textures/surface.bmp");
 
-	tex_wood.Load("Textures/wood.bmp");
+	tex_wood.Load("Textures/wall.bmp");
 
 	loadBMP(&tex, "Textures/blu-sky-3.bmp", true);
 }
