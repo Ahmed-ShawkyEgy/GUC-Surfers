@@ -252,7 +252,7 @@ void renderObstacle(float x, float lane)
 
 	glPushMatrix();
 
-	glTranslated(x, 1, lane);
+	glTranslated(x, 1.55, lane);
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
