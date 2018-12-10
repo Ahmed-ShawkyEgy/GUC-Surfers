@@ -25,13 +25,16 @@ const float GAME_SPEED = 0.8;
 int WIDTH = 1280;
 int HEIGHT = 720;
 GLuint tex;
-char title[] = "3D Model Loader Sample";
+char title[] = "GUC Surfers";
 
 float groundTransform = 0;
 
 int coin_rotation_angle;
 
 int player_lane = 1;
+int score = 0;
+int maxScore = 10;
+
 vector<Shape> obstacles;
 vector<Shape> coins;
 
@@ -71,7 +74,26 @@ Model_3DS model_car;
 Model_3DS coin_model;
 // Textures
 GLTexture tex_ground;
+
+GLTexture tex_surface;
 GLTexture tex_wood;
+
+void print(int x, int y, char *string)
+{
+	int len, i;
+
+	//set the position of the text in the window using the x and y coordinates
+	glRasterPos2f(x, y);
+
+	//get the length of the string to display
+	len = (int)strlen(string);
+
+	//loop to display character by character
+	for (i = 0; i < len; i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+	}
+}
 
 //=======================================================================
 // Lighting Configuration Function
@@ -156,6 +178,37 @@ void RenderGround()
 	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
 }
 
+void RenderSurface()
+{
+	glDisable(GL_LIGHTING);	// Disable lighting
+
+	glColor3f(0.6, 0.6, 0.6);	// Dim the ground texture a bit
+
+	glEnable(GL_TEXTURE_2D);	// Enable 2D texturing
+
+	glBindTexture(GL_TEXTURE_2D, tex_surface.texture[0]);	// Bind the ground texture
+
+	glPushMatrix();
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);	// Set quad normal direction.
+	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
+	glVertex3f(-200, 0, -200);
+	glTexCoord2f(10, 0);
+	glVertex3f(200, 0, -200);
+	glTexCoord2f(10, 10);
+	glVertex3f(200, 0, 200);
+	glTexCoord2f(0, 10);
+	glVertex3f(-200, 0, 200);
+	glEnd();
+	glPopMatrix();
+
+	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
+
+	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
+}
+
+
+
 // Draws a unit quad
 void renderFace(Vector3f normal)
 {
@@ -197,7 +250,7 @@ void renderObstacle(float x, float lane)
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
 	glPushMatrix();
-	glTranslated(x, 0, lane);
+	glTranslated(x, 1, lane);
 
 	// Top Face
 	glPushMatrix();
@@ -281,7 +334,6 @@ void onObstacleCollision()
 
 void onCoinCollision(int i)
 {
-	destroyAtIndex(i, coins);
 	printf("Collision with Coin\n");
 }
 
@@ -306,10 +358,21 @@ void myDisplay(void)
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
 
+	// Display Score
+	char* strScore[20];
+	sprintf((char *)strScore, "Score = %d/%d", score, maxScore);
+	print(50, 50, (char *)strScore);
+
+	// Display Level
+
+	glPushMatrix();
+	glTranslated(0, 0, 0);
+	RenderSurface();
+	glPopMatrix();
 
 	// Draw Ground
 	glPushMatrix();
-	glTranslated(groundTransform, 0, 0);
+	glTranslated(groundTransform, 0.5, 0);
 	RenderGround();
 	glPopMatrix();
 
@@ -317,7 +380,7 @@ void myDisplay(void)
 	// Draw Player
 	glPushMatrix();
 
-	glTranslatef(0, 0, lanes[player_lane]);
+	glTranslatef(0, 0.5, lanes[player_lane]);
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.f, 0, 1, 0);
 	model_car.Draw();
@@ -368,6 +431,8 @@ void LoadAssets()
 	coin_model.Load("Models/coin/Coin Block.3ds");
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
+	tex_surface.Load("Textures/surface.bmp");
+
 	tex_wood.Load("Textures/wood.bmp");
 
 	loadBMP(&tex, "Textures/blu-sky-3.bmp", true);
@@ -404,18 +469,18 @@ void anime()
 			coins[i].x <= 0.9 && coins[i].x >= 0)
 		{
 			onCoinCollision(i);
+			destroyAtIndex(i--, coins);
 		}
+	}
 
+	for (int i = 0; i < coins.size(); i++)
+	{
 		// If the coin is way behind the player
 		if (coins[i].x < -20 && coins.size() > 0)
 			destroyAtIndex(i--, coins);
 	}
 
 	groundTransform -= GAME_SPEED;
-	if (groundTransform < -GROUND_LENGTH / 8)
-	{
-		//groundTransform = 0;
-	}
 
 	for (int i = 0; i < 1e7; i++);
 	glutPostRedisplay();
@@ -552,3 +617,5 @@ void main(int argc, char** argv)
 
 	glutMainLoop();
 }
+
+
