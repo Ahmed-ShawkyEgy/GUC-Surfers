@@ -29,8 +29,12 @@ char title[] = "3D Model Loader Sample";
 
 float groundTransform = 0;
 
+int coin_rotation_angle;
+
 int player_lane = 1;
 vector<Shape> obstacles;
+vector<Shape> coins;
+
 
 struct Shape {
 	float x;
@@ -64,7 +68,7 @@ void setupCamera() {
 // Model Variables
 Model_3DS model_house;
 Model_3DS model_car;
-
+Model_3DS coin_model;
 // Textures
 GLTexture tex_ground;
 GLTexture tex_wood;
@@ -170,6 +174,18 @@ void renderFace(Vector3f normal)
 	glPopMatrix();
 }
 
+void renderCoin(float x, float lane) {
+
+	//Draw Coins
+	glPushMatrix();
+	glTranslatef(x+5, 0.75, lane);
+	glScalef(0.01, 0.015, 0.01);
+	glRotatef(coin_rotation_angle, 0, 1, 0);
+	coin_model.Draw();
+	glPopMatrix();
+
+}
+
 void renderObstacle(float x,float lane)
 {
 	//glDisable(GL_LIGHTING);	// Disable lighting 
@@ -241,11 +257,12 @@ void addObstacle(int lane)
 	obstacles.push_back(Shape(RESPAWN_POSITION,lane));
 }
 
-// TODO implement
-void onObstacleCollision()
+void addCoin(int lane)
 {
-	printf("Collision with obstacle\n");
+	coins.push_back(Shape(RESPAWN_POSITION, lane));
 }
+
+
 
 void destroyAtIndex(int index, vector<Shape> &shapes)
 {
@@ -254,6 +271,18 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 	shapes[shapes.size() - 1] = shapes[index];
 	shapes[index] = tmp;
 	shapes.pop_back();
+}
+
+// TODO implement
+void onObstacleCollision()
+{
+	printf("Collision with obstacle\n");
+}
+
+void onCoinCollision(int i)
+{
+	destroyAtIndex(i, coins);
+	printf("Collision with Coin\n");
 }
 
 int random(int lower, int upper)
@@ -295,6 +324,13 @@ void myDisplay(void)
 
 	glPopMatrix();
 
+	//Draw all Coins
+	for (unsigned i = 0; i < coins.size(); i++)
+	{
+		renderCoin(coins[i].x, lanes[coins[i].lane]);
+	}
+
+
 	// Draw all obstacles
 	for (unsigned i = 0; i < obstacles.size();i++)
 	{
@@ -328,9 +364,8 @@ void myDisplay(void)
 void LoadAssets()
 {
 	// Loading Model files
-	model_house.Load("Models/house/house.3DS");
 	model_car.Load("Models/car/ausfb.3ds");
-
+	coin_model.Load("Models/coin/Coin Block.3ds");
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
 	tex_wood.Load("Textures/wood.bmp");
@@ -343,6 +378,7 @@ void LoadAssets()
 //=======================================================================
 void anime()
 {
+	coin_rotation_angle+=5;
 	for (int i = 0; i < obstacles.size();i++)
 	{
 		obstacles[i].x-=GAME_SPEED;
@@ -357,6 +393,22 @@ void anime()
 		// If the obstacle is way behind the player
 		if (obstacles[i].x < -20)
 			destroyAtIndex(i--, obstacles);
+	}
+
+	for (int i = 0; i < coins.size(); i++)
+	{
+		coins[i].x -= GAME_SPEED;
+
+		// If player collided with coin
+		if (coins[i].lane == player_lane &&
+			coins[i].x <= 0.9 && coins[i].x >= 0)
+		{
+			onCoinCollision(i);
+		}
+
+		// If the coin is way behind the player
+		if (coins[i].x < -20 && coins.size() > 0 )
+			destroyAtIndex(i--, coins);
 	}
 
 	groundTransform -= GAME_SPEED;
@@ -418,7 +470,7 @@ void Keyboard(unsigned char key, int x, int y) {
 }
 
 void Special(int key, int x, int y) {
-	float a = 4.0;
+	float a = 1.0;
 
 	switch (key) {
 	case GLUT_KEY_UP:
@@ -447,7 +499,19 @@ void dropObstacle(int v)
 		int lane = random(0, 2);
 		addObstacle(lane);
 	}
-	glutTimerFunc(1000, dropObstacle, 0);
+	glutTimerFunc(750, dropObstacle, 0);
+}
+
+void dropCoin(int v)
+{
+	boolean dropAllowed = random(0, 100) < 70;
+
+	if (dropAllowed)
+	{
+		int lane = random(0, 2);
+		addCoin(lane);
+	}
+	glutTimerFunc(2000, dropCoin, 0);
 }
 
 //=======================================================================
@@ -470,6 +534,8 @@ void main(int argc, char** argv)
 	glutIdleFunc(anime);
 
 	glutTimerFunc(0, dropObstacle, 0);
+	glutTimerFunc(0, dropCoin, 0);
+
 
 	glutKeyboardFunc(Keyboard);
 
