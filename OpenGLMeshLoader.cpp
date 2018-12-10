@@ -78,22 +78,22 @@ GLTexture tex_ground;
 GLTexture tex_surface;
 GLTexture tex_wood;
 
-void print(int x, int y, char *string)
+
+
+void print(char*string, int x, int y, int z)
 {
-	int len, i;
+	char *c;
+	glPushMatrix();
+	glTranslatef(x, y , z);
+	// glScalef(0.09f,-0.08f,z);
 
-	//set the position of the text in the window using the x and y coordinates
-	glRasterPos2f(x, y);
-
-	//get the length of the string to display
-	len = (int)strlen(string);
-
-	//loop to display character by character
-	for (i = 0; i < len; i++)
+	for (c = string; *c != '\0'; c++)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
 	}
+	glPopMatrix();
 }
+
 
 //=======================================================================
 // Lighting Configuration Function
@@ -249,9 +249,10 @@ void renderObstacle(float x, float lane)
 
 	glBindTexture(GL_TEXTURE_2D, tex_wood.texture[0]);	// Bind the ground texture
 
+
 	glPushMatrix();
 
-	glTranslated(x, 1, lane);
+	glTranslated(x, 1.55, lane);
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
@@ -363,7 +364,12 @@ void myDisplay(void)
 
 
 	sprintf((char *)strScore, "Score = %d/%d", score, maxScore);
-	print(50, 50, (char *)strScore);
+
+	glPushMatrix();
+	glScaled(0.05,0.05, -10);
+	glColor3d(1, 1, 0);
+	print("SCORE", 500, 3, 1);
+	glPopMatrix();
 
 	// Display Level
 
