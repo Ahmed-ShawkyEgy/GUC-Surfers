@@ -1,10 +1,10 @@
 ﻿  OpenGLMeshLoader.cpp
 c:\users\moghazy\repos\guc-surfers\texturebuilder.h(27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
 c:\users\moghazy\repos\guc-surfers\texturebuilder.h(28): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(365): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(382): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(449): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(465): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(478): warning C4018: '<': signed/unsigned mismatch
+c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(467): warning C4018: '<': signed/unsigned mismatch
+c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(483): warning C4018: '<': signed/unsigned mismatch
+c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(496): warning C4018: '<': signed/unsigned mismatch
 Camera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
   OpenGLMeshLoader.vcxproj -> C:\Users\Moghazy\repos\GUC-Surfers\Debug\OpenGLMeshLoader.exe

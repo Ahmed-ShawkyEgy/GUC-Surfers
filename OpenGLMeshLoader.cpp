@@ -34,6 +34,7 @@ int coin_rotation_angle;
 int player_lane = 1;
 int score = 0;
 int maxScore = 10;
+int score_pos = 0;
 
 vector<Shape> obstacles;
 vector<Shape> coins;
@@ -334,6 +335,7 @@ void onObstacleCollision()
 
 void onCoinCollision(int i)
 {
+	score++;
 	printf("Collision with Coin\n");
 }
 
@@ -361,9 +363,25 @@ void myDisplay(void)
 	// Display Score
 	char* strScore[20];
 
+	glPushMatrix();
+	if (player_lane == 0)
+	{
+		glTranslatef(-10, score_pos , 10);
+	}
+	 else if (player_lane ==  1)
+	{
 
+		glTranslatef(-10, score_pos, 12);
+
+	}
+	 else {
+		glTranslatef(-10, score_pos, 14);
+
+	}
+	glColor3f(0, 0, 0);	// Dim the ground texture a bit
 	sprintf((char *)strScore, "Score = %d/%d", score, maxScore);
 	print(50, 50, (char *)strScore);
+	glPopMatrix();
 
 	// Display Level
 
@@ -523,10 +541,12 @@ void Keyboard(unsigned char key, int x, int y) {
 		break;
 
 	case 't':
+		score_pos = -48.5;
 		camera = Camera(-8.0f, 7.0f, lanes[player_lane], -1.0f, 2.7f, lanes[player_lane], 0.0f, 1.0f, 0.0f);
 		break;
 
 	case 'f':
+		score_pos = -30;
 		camera = Camera(0.5f, 2.0f, lanes[player_lane], 1.0f, 2.0f, lanes[player_lane], 0.0f, 1.0f, 0.0f);;
 		break;
 	case GLUT_KEY_ESCAPE:
