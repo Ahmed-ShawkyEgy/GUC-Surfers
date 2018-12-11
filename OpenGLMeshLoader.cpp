@@ -30,7 +30,7 @@ char title[] = "GUC Surfers";
 float groundTransform = 0;
 
 int coin_rotation_angle;
-
+bool s = true;
 int player_lane = 1;
 int score = 0;
 int virtual_score = 0;
@@ -102,28 +102,56 @@ void print(int x, int y, char *string)
 //=======================================================================
 void InitLightSource()
 {
-	// Enable Lighting for this OpenGL Program
 	glEnable(GL_LIGHTING);
 
-	// Enable Light Source number 0
-	// OpengL has 8 light sources
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 
-	// Define Light source 0 ambient light
-	GLfloat ambient[] = { 0.1f, 0.1f, 0.1, 1.0f };
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	GLfloat lmodel_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
-	// Define Light source 0 diffuse light
-	GLfloat diffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	GLfloat l0Diffuse[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	GLfloat l0Spec[] = { 0.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat l0Ambient[] = { .1f, 0.f, 0.0f, 1.f };
+	GLfloat l0Position[] = { 10.0f, 0.0f, 0.0f, s };
+	GLfloat l0Direction[] = { -1.0, 0.0, 0.0 };
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, l0Diffuse);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, l0Ambient);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l0Spec);
+	glLightfv(GL_LIGHT0, GL_POSITION, l0Position);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 30.0);
+	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 90.0);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l0Direction);
 
-	// Define Light source 0 Specular light
-	GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	GLfloat l1Diffuse[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+	GLfloat l1Ambient[] = { 0.0f, .1f, 0.0f, 1.0f };
+	GLfloat l1Spec[] = { 1.0f, 0.0f, 1.0f, 1.0f };
+	GLfloat l1Position[] = { 0.0f, 10.0f, 0.0f, s };
+	GLfloat l1Direction[] = { 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, l1Diffuse);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, l1Ambient);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l0Spec);
+	glLightfv(GL_LIGHT1, GL_POSITION, l1Position);
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 90.0);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, l1Direction);
 
-	// Finally, define light source 0 position in World Space
-	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	GLfloat l2Diffuse[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	GLfloat l2Ambient[] = { 0.0f, 0.0f, .1f, 1.0f };
+	GLfloat l2Spec[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+	GLfloat l2Position[] = { 0.0f, 0.0f, 10.0f, s };
+	GLfloat l2Direction[] = { 0.0, 0.0, -1.0 };
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, l2Diffuse);
+	glLightfv(GL_LIGHT2, GL_AMBIENT, l2Ambient);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l0Spec);
+	glLightfv(GL_LIGHT2, GL_POSITION, l2Position);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 30.0);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 90.0);
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, l2Direction);
+
+
+
 }
 
 //=======================================================================
@@ -146,6 +174,7 @@ void InitMaterial()
 	GLfloat shininess[] = { 96.0f };
 	glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
 }
+
 
 
 //=======================================================================
@@ -395,15 +424,17 @@ int random(int lower, int upper)
 //=======================================================================
 void myDisplay(void)
 {
-	setupCamera();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	setupCamera();
+	InitLightSource();
+	InitMaterial();
 
-	GLfloat lightIntensity[] = { 0.7, 0.7, 0.7, 1.0f };
+	/*GLfloat lightIntensity[] = { 0.7, 0.7, 0.7, 1.0f };
 	GLfloat lightPosition[] = { 0.0f, 100.0f, 0.0f, 0.0f };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);*/
 
 	// Display Score
 	char* strScore[20];
@@ -483,7 +514,8 @@ void myDisplay(void)
 
 
 
-	glutSwapBuffers();
+	//glutSwapBuffers();
+	glFlush();
 }
 
 //=======================================================================
@@ -551,7 +583,7 @@ void anime()
 
 	groundTransform -= GAME_SPEED * stop;
 
-	for (int i = 0; i < 1e7; i++);
+	for (int i = 0; i < 1e7 ; i++);
 	glutPostRedisplay();
 }
 
@@ -657,7 +689,7 @@ void main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 
 	glutInitWindowSize(WIDTH, HEIGHT);
 
@@ -681,6 +713,8 @@ void main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
 
