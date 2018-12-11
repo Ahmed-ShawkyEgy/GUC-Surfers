@@ -4,6 +4,7 @@
 #include <glut.h>
 #include <stdlib.h>
 #include <vector>
+#include <iostream>
 #include "Vector3f.h"
 #include "Camera.h" 
 
@@ -30,7 +31,8 @@ char title[] = "GUC Surfers";
 float groundTransform = 0;
 
 int coin_rotation_angle;
-bool s = true;
+bool l0,l1,l2;
+int light = 0;
 int player_lane = 1;
 int score = 0;
 int virtual_score = 0;
@@ -115,13 +117,15 @@ void InitLightSource()
 	glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHT2);
 
+	
+
 	GLfloat lmodel_ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
 
 	GLfloat l0Diffuse[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	GLfloat l0Spec[] = { 0.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat l0Ambient[] = { .1f, 0.f, 0.0f, 1.f };
-	GLfloat l0Position[] = { 10.0f, 0.0f, 0.0f, s };
+	GLfloat l0Spec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat l0Ambient[] = { .1f, 0.1f, 0.1f, 1.f };
+	GLfloat l0Position[] = { 10.0f, 0.0f, 0.0f, l0};
 	GLfloat l0Direction[] = { -1.0, 0.0, 0.0 };
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, l0Diffuse);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, l0Ambient);
@@ -132,13 +136,13 @@ void InitLightSource()
 	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l0Direction);
 
 	GLfloat l1Diffuse[] = { 0.0f, 1.0f, 0.0f, 1.0f };
-	GLfloat l1Ambient[] = { 0.0f, .1f, 0.0f, 1.0f };
+	GLfloat l1Ambient[] = { 0.1f, .1f, 0.1f, 1.0f };
 	GLfloat l1Spec[] = { 1.0f, 0.0f, 1.0f, 1.0f };
-	GLfloat l1Position[] = { 0.0f, 10.0f, 0.0f, s };
+	GLfloat l1Position[] = { 0.0f, 10.0f, 0.0f, l1 };
 	GLfloat l1Direction[] = { 0.0, -1.0, 0.0 };
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, l1Diffuse);
 	glLightfv(GL_LIGHT1, GL_AMBIENT, l1Ambient);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, l0Spec);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l1Spec);
 	glLightfv(GL_LIGHT1, GL_POSITION, l1Position);
 	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 90.0);
@@ -147,17 +151,17 @@ void InitLightSource()
 	GLfloat l2Diffuse[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	GLfloat l2Ambient[] = { 0.0f, 0.0f, .1f, 1.0f };
 	GLfloat l2Spec[] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	GLfloat l2Position[] = { 0.0f, 0.0f, 10.0f, s };
+	GLfloat l2Position[] = { 0.0f, 0.0f, 10.0f, l2 };
 	GLfloat l2Direction[] = { 0.0, 0.0, -1.0 };
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, l2Diffuse);
 	glLightfv(GL_LIGHT2, GL_AMBIENT, l2Ambient);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, l0Spec);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l2Spec);
 	glLightfv(GL_LIGHT2, GL_POSITION, l2Position);
 	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 30.0);
 	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 90.0);
 	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, l2Direction);
 
-
+	
 
 }
 
@@ -694,6 +698,29 @@ void dropCoin(int v)
 	glutTimerFunc(2000, dropCoin, 0);
 }
 
+void lightAnim(int time)
+{
+	cout << light;
+	if (light == 0) {
+		l0 = 1;
+		l1 = 0;
+		l2 = 0;
+	}
+	if (light == 1) {
+		l0 = 0;
+		l1 = 1;
+		l2 = 0;
+	}
+	if (light == 2) {
+		l0 = 0;
+		l1 = 0;
+		l2 = 1;
+	}
+	light++;
+	light %= 3;
+	glutTimerFunc(1500, lightAnim, 0);
+}
+
 //=======================================================================
 // Main Function
 //=======================================================================
@@ -715,6 +742,7 @@ void main(int argc, char** argv)
 
 	glutTimerFunc(0, dropObstacle, 0);
 	glutTimerFunc(0, dropCoin, 0);
+	glutTimerFunc(0, lightAnim, 0);
 
 
 	glutKeyboardFunc(Keyboard);
@@ -724,9 +752,6 @@ void main(int argc, char** argv)
 	LoadAssets();
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHT2);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
 
