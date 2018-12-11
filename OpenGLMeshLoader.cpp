@@ -36,7 +36,7 @@ int score = 0;
 int virtual_score = 0;
 int maxScore = 10;
 int score_pos = -30;
-
+int stop = 1;
 vector<Shape> obstacles;
 vector<Shape> coins;
 
@@ -164,7 +164,7 @@ void RenderGround()
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);	// Set quad normal direction.
-	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
+	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with tescorexture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
 	glVertex3f(-20, 0, -3);
 	glTexCoord2f(200, 0);
 	glVertex3f(GROUND_LENGTH, 0, -3);
@@ -331,9 +331,15 @@ void destroyAtIndex(int index, vector<Shape> &shapes)
 // TODO implement
 void onObstacleCollision()
 {
+	glFlush();
 	groundTransform = 0;
 	score = 0;
-	virtual_score = 0;
+	if (virtual_score > 10) {
+		virtual_score = 10;
+	}
+	else {
+		virtual_score = 0;
+	}
 	for (int i = 0; i < obstacles.size(); i++)
 	{
 		obstacles[i].x -= 200;
@@ -347,10 +353,12 @@ void onObstacleCollision()
 
 void onCoinCollision(int i)
 {
+	glFlush();
 	virtual_score++;
 	score++;
 
 	if (virtual_score == 10) {
+		glutSwapBuffers();
 		tex_ground.Load("Textures/wood.bmp");
 		tex_surface.Load("Textures/ground0.bmp");
 		tex_wood.Load("Textures/marple.bmp");
@@ -366,6 +374,13 @@ void onCoinCollision(int i)
 		{
 			coins[i].x -= 200;
 		}
+	}
+
+	else if (virtual_score == 40) {
+
+		stop = 0;
+		exit(EXIT_SUCCESS);
+
 	}
 	printf("Collision with Coin\n");
 }
@@ -495,10 +510,10 @@ void LoadAssets()
 //=======================================================================
 void anime()
 {
-	coin_rotation_angle += 5;
+	coin_rotation_angle += 5 * stop;
 	for (int i = 0; i < obstacles.size(); i++)
 	{
-		obstacles[i].x -= GAME_SPEED;
+		obstacles[i].x -= GAME_SPEED * stop;
 
 		// If player collided with obstacle
 		if (obstacles[i].lane == player_lane &&
@@ -516,7 +531,7 @@ void anime()
 
 	for (int i = 0; i < coins.size(); i++)
 	{
-		coins[i].x -= GAME_SPEED;
+		coins[i].x -= GAME_SPEED * stop;
 
 		// If player collided with coin
 		if (coins[i].lane == player_lane &&
@@ -534,7 +549,7 @@ void anime()
 			destroyAtIndex(i--, coins);
 	}
 
-	groundTransform -= GAME_SPEED;
+	groundTransform -= GAME_SPEED * stop;
 
 	for (int i = 0; i < 1e7; i++);
 	glutPostRedisplay();
