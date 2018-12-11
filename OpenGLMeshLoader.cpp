@@ -394,6 +394,8 @@ void onObstacleCollision()
 void onCoinCollision(int i)
 {
 	glFlush();
+	glutSwapBuffers();
+
 	virtual_score++;
 	score++;
 
@@ -405,7 +407,7 @@ void onCoinCollision(int i)
 
 
 		score = 0;
-		maxScore = 30;
+		maxScore = 20;
 		for (int i = 0; i < obstacles.size(); i++)
 		{
 			obstacles[i].x -= 200;
@@ -416,7 +418,7 @@ void onCoinCollision(int i)
 		}
 	}
 
-	else if (virtual_score == 40) {
+	else if (virtual_score == 30) {
 
 		stop = 0;
 		exit(EXIT_SUCCESS);
