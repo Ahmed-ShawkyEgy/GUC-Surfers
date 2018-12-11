@@ -33,6 +33,7 @@ int coin_rotation_angle;
 
 int player_lane = 1;
 int score = 0;
+int virtual_score = 0;
 int maxScore = 10;
 int score_pos = -30;
 
@@ -252,7 +253,7 @@ void renderObstacle(float x, float lane)
 
 	glPushMatrix();
 
-	glTranslated(x, 1, lane);
+	glTranslated(x, 1.7, lane);
 	// Top Face
 	glPushMatrix();
 	glTranslated(0, 1, 0);
@@ -332,6 +333,7 @@ void onObstacleCollision()
 {
 	groundTransform = 0;
 	score = 0;
+	virtual_score = 0;
 	for (int i = 0; i < obstacles.size(); i++)
 	{
 		obstacles[i].x -= 200;
@@ -345,7 +347,26 @@ void onObstacleCollision()
 
 void onCoinCollision(int i)
 {
+	virtual_score++;
 	score++;
+
+	if (virtual_score == 10) {
+		tex_ground.Load("Textures/wood.bmp");
+		tex_surface.Load("Textures/ground0.bmp");
+		tex_wood.Load("Textures/marple.bmp");
+
+
+		score = 0;
+		maxScore = 30;
+		for (int i = 0; i < obstacles.size(); i++)
+		{
+			obstacles[i].x -= 200;
+		}
+		for (int i = 0; i < coins.size(); i++)
+		{
+			coins[i].x -= 200;
+		}
+	}
 	printf("Collision with Coin\n");
 }
 
@@ -362,7 +383,6 @@ void myDisplay(void)
 	setupCamera();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
 
 	GLfloat lightIntensity[] = { 0.7, 0.7, 0.7, 1.0f };
@@ -460,7 +480,9 @@ void LoadAssets()
 	model_car.Load("Models/car/ausfb.3ds");
 	coin_model.Load("Models/coin/Coin Block.3ds");
 	// Loading texture files
-	tex_ground.Load("Textures/ground.bmp");
+	if (score <= 2) {
+		tex_ground.Load("Textures/ground.bmp");
+	}
 	tex_surface.Load("Textures/surface.bmp");
 
 	tex_wood.Load("Textures/wall.bmp");
