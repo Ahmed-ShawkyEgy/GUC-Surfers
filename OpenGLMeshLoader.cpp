@@ -102,6 +102,13 @@ void print(int x, int y, char *string)
 //=======================================================================
 void InitLightSource()
 {
+
+
+
+
+
+
+
 	glEnable(GL_LIGHTING);
 
 	glEnable(GL_LIGHT0);
@@ -260,6 +267,7 @@ void renderFace(Vector3f normal)
 
 void renderCoin(float x, float lane) {
 
+	glDisable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
 	//Draw Coins
 	glPushMatrix();
 	glTranslatef(x + 5, 0.75 + 0.5, lane);
@@ -268,11 +276,14 @@ void renderCoin(float x, float lane) {
 	coin_model.Draw();
 	glPopMatrix();
 
+	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
+	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
+
 }
 
 void renderObstacle(float x, float lane)
 {
-	//glDisable(GL_LIGHTING);	// Disable lighting 
+	glDisable(GL_LIGHTING);	// Disable lighting 
 
 	glColor3f(1, 1, 1);
 
@@ -496,7 +507,8 @@ void myDisplay(void)
 		renderObstacle(obstacles[i].x, lanes[obstacles[i].lane]);
 	}
 
-	//sky box
+	//sky box4
+	glDisable(GL_LIGHTING);	// Disable lighting 
 	glPushMatrix();
 
 	GLUquadricObj * qobj;
@@ -508,10 +520,10 @@ void myDisplay(void)
 	gluQuadricNormals(qobj, GL_SMOOTH);
 	gluSphere(qobj, 100, 100, 100);
 	gluDeleteQuadric(qobj);
-
-
 	glPopMatrix();
+	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
 
+	glColor3f(1, 1, 1);	// Set material back to white instead of grey used for the ground texture.
 
 
 	//glutSwapBuffers();
