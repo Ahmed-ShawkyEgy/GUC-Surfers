@@ -1,17 +1,17 @@
 ﻿  OpenGLMeshLoader.cpp
-c:\users\moghazy\repos\guc-surfers\texturebuilder.h(27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\moghazy\repos\guc-surfers\texturebuilder.h(28): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(124): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(137): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(150): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(383): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(387): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(411): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(415): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(471): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\ahmed\year 4 engineer\semester 1\graphics\project\texturebuilder.h(27): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+d:\ahmed\year 4 engineer\semester 1\graphics\project\texturebuilder.h(28): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(128): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(141): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(154): warning C4838: conversion from 'bool' to 'GLfloat' requires a narrowing conversion
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(387): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(391): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(414): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(418): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(473): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: see declaration of 'sprintf'
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(560): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(578): warning C4018: '<': signed/unsigned mismatch
-c:\users\moghazy\repos\guc-surfers\openglmeshloader.cpp(591): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(562): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(580): warning C4018: '<': signed/unsigned mismatch
+d:\ahmed\year 4 engineer\semester 1\graphics\project\openglmeshloader.cpp(593): warning C4018: '<': signed/unsigned mismatch
 Camera.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
-  OpenGLMeshLoader.vcxproj -> C:\Users\Moghazy\repos\GUC-Surfers\Debug\OpenGLMeshLoader.exe
+  OpenGLMeshLoader.vcxproj -> D:\Ahmed\Year 4 Engineer\Semester 1\Graphics\Project\Debug\OpenGLMeshLoader.exe

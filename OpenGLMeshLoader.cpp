@@ -392,7 +392,6 @@ void onObstacleCollision()
 	{
 		coins[i].x -= 200;
 	}
-	printf("Collision with obstacle\n");
 }
 
 void onCoinCollision(int i)
@@ -428,7 +427,6 @@ void onCoinCollision(int i)
 		exit(EXIT_SUCCESS);
 
 	}
-	printf("Collision with Coin\n");
 }
 
 int random(int lower, int upper)
